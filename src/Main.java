@@ -1,18 +1,21 @@
 import java.util.*;
+import java.util.stream.Collectors;
 
 class Bogie {
     String name;
     int capacity;
+    String type; // New field for grouping
 
     // Constructor
-    Bogie(String name, int capacity) {
+    Bogie(String name, int capacity, String type) {
         this.name = name;
         this.capacity = capacity;
+        this.type = type;
     }
 
     // Display method
     void display() {
-        System.out.println(name + " - Capacity: " + capacity);
+        System.out.println(name + " - Capacity: " + capacity + " - Type: " + type);
     }
 }
 
@@ -23,18 +26,24 @@ public class Main {
         List<Bogie> bogies = new ArrayList<>();
 
         // Add bogies
-        bogies.add(new Bogie("Sleeper", 72));
-        bogies.add(new Bogie("AC Chair", 60));
-        bogies.add(new Bogie("First Class", 40));
-        bogies.add(new Bogie("General", 90));
+        bogies.add(new Bogie("Sleeper", 72, "Non-AC"));
+        bogies.add(new Bogie("General", 90, "Non-AC"));
+        bogies.add(new Bogie("AC Chair", 60, "AC"));
+        bogies.add(new Bogie("First Class", 40, "AC"));
+        bogies.add(new Bogie("Second Sitting", 80, "Non-AC"));
 
-        // Sort using Comparator (Lambda)
-        bogies.sort(Comparator.comparingInt(b -> b.capacity));
+        // Group using Stream API
+        Map<String, List<Bogie>> groupedBogies =
+                bogies.stream()
+                        .collect(Collectors.groupingBy(b -> b.type));
 
-        // Display sorted bogies
-        System.out.println("Sorted Bogies by Capacity:");
-        for (Bogie b : bogies) {
-            b.display();
+        // Display grouped bogies
+        System.out.println("Grouped Bogies by Type:");
+        for (String type : groupedBogies.keySet()) {
+            System.out.println("\nType: " + type);
+            for (Bogie b : groupedBogies.get(type)) {
+                b.display();
+            }
         }
     }
 }
